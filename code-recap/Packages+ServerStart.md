@@ -128,3 +128,39 @@ journalctl -u <service> --since "1 hour ago"
 
 systemctl tells you whether something is running
 journalctl tells you why it is or is not running
+
+Checking ip ADRESSES
+
+ip a  - LO *Loopback* - this is internal IP adress example inet 127.0.0.1/8
+      - eth0 this is the house network PC IP adress, inside of the house/router network, example inet 172.22.144.163/20
+ss -tulpn | grep 22   -showing the situation of the 22 port
+ss -tulpn  - showing all the ports
+
+Diference in IP adresses
+127.0.0.1 is only a local IP, access from outside of the home network is impossible
+0.0.0.0 is like a server network anybody can access it
+
+curl ifconfig.me -showing the public router IP adress
+
+Installing ufw means installing a firewall package
+
+sudo apt install ufw
+ufw version - check installed version
+sudo ufw status verbose - check whether the firewall is enabled
+sudo ufw enable - enable the firewall
+
+systemctl status ssh.socket - check which port SSH is listening on
+
+If we change the SSH port, it would look like this:
+
+sudo nano /etc/ssh/sshd_config - change Port:22 to Port:2222 and delete #
+sudo ufw allow 2222 - allow the port to receive incoming traffic
+sudo systemctl restart ssh
+ss -tulpn | grep 2222 - check if SSH is listening on the new port
+ssh -p 2222 user@IP - connect to SSH using the new port
+
+ssh localhost - connect to the SSH service using the local IP
+sudo systemctl stop ssh.socket - stops the socket, port 22 will no longer appear in ss -tulpn
+sudo systemctl start ssh - starts the SSH service (always running, not triggered)
+sudo systemctl stop ssh - stops the SSH service
+sudo systemctl start ssh.socket - enables only the socket, which listens on the port and triggers the service when needed
